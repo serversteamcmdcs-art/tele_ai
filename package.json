@@ -15,7 +15,7 @@
     "dev:client": "npm run dev -w packages/client",
     "build": "node build.js",
     "build:client": "npx vite build --outDir dist",
-    "build:render": "npm run build:client && npm run db:generate && npm run db:push",
+    "build:render": "npm run build:client && npm run db:generate && npm run dev:server",
     "start": "npx tsx packages/server/src/index.ts",
     "start:render": "npm run db:push && npm run db:seed:prod && npx tsx packages/server/src/index.ts",
     "desktop": "cd packages/desktop && npx electron .",
