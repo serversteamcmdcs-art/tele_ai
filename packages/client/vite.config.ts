@@ -15,15 +15,15 @@ export default defineConfig({
     strictPort: false,
     proxy: {
       '/api': {
-        target: 'http://127.0.0.1:3001',
+        target: 'https://tele-ai-17ok.onrender.com',
         changeOrigin: true,
       },
       '/ws': {
-        target: 'ws://127.0.0.1:3001',
+        target: 'ws://tele-ai-17ok.onrender.com',
         ws: true,
       },
       '/uploads': {
-        target: 'http://127.0.0.1:3001',
+        target: 'https://tele-ai-17ok.onrender.com',
         changeOrigin: true,
       },
     },
