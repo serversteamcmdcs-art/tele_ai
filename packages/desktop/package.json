@@ -1,0 +1,36 @@
+{
+  "name": "teleai-desktop",
+  "version": "1.0.0",
+  "description": "TeleAI Desktop — Electron App",
+  "main": "main.js",
+  "author": "TeleAI",
+  "license": "MIT",
+  "scripts": {
+    "start": "electron .",
+    "build": "electron-builder --win portable",
+    "build:dir": "electron-builder --win dir"
+  },
+  "dependencies": {},
+  "devDependencies": {
+    "electron": "^33.0.0",
+    "electron-builder": "^25.1.8"
+  },
+  "build": {
+    "appId": "com.teleai.messenger",
+    "productName": "TeleAI",
+    "directories": {
+      "output": "../../dist-electron"
+    },
+    "files": [
+      "main.js",
+      "preload.js"
+    ],
+    "win": {
+      "target": "portable",
+      "icon": null
+    },
+    "portable": {
+      "artifactName": "TeleAI.exe"
+    }
+  }
+}
