@@ -14,19 +14,4 @@ export default defineConfig({
     host: '127.0.0.1',
     strictPort: false,
     allowedHosts: ['tele-ai-1.onrender.com']
-    proxy: {
-      '/api': {
-        target: 'https://tele-ai-17ok.onrender.com',
-        changeOrigin: true,
-      },
-      '/ws': {
-        target: 'ws://tele-ai-17ok.onrender.com',
-        ws: true,
-      },
-      '/uploads': {
-        target: 'https://tele-ai-17ok.onrender.com',
-        changeOrigin: true,
-      },
-    },
-  },
 });
