@@ -1,0 +1,261 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = "file:../data/teleai.db"
+}
+
+// ==================== Пользователи ====================
+
+model User {
+  id          String   @id @default(uuid())
+  username    String   @unique
+  password    String
+  displayName String
+  bio         String?
+  avatarUrl   String?
+  isOnline    Boolean  @default(false)
+  lastSeen    DateTime @default(now())
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  settings    UserSettings?
+  sessions    Session[]
+  contacts    Contact[]        @relation("UserContacts")
+  contactOf   Contact[]        @relation("ContactUser")
+  blocked     BlockedUser[]    @relation("Blocker")
+  blockedBy   BlockedUser[]    @relation("Blocked")
+  memberships ChatMember[]
+  messages    Message[]
+  reactions   MessageReaction[]
+  ownedBots   Bot[]
+  calls       Call[]           @relation("Caller")
+  receivedCalls Call[]         @relation("Receiver")
+}
+
+model UserSettings {
+  id               String  @id @default(uuid())
+  userId           String  @unique
+  theme            String  @default("dark")
+  fontSize         String  @default("medium")
+  language         String  @default("ru")
+  showLastSeen     String  @default("everyone")
+  showAvatar       String  @default("everyone")
+  showBio          String  @default("everyone")
+  allowCalls       String  @default("everyone")
+  allowGroupInvites String @default("everyone")
+  notifyEnabled    Boolean @default(true)
+  notifySound      Boolean @default(true)
+  notifyPreview    Boolean @default(true)
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
+
+model Session {
+  id        String   @id @default(uuid())
+  userId    String
+  token     String   @unique
+  device    String?
+  ip        String?
+  lastUsed  DateTime @default(now())
+  createdAt DateTime @default(now())
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
+
+// ==================== Контакты ====================
+
+model Contact {
+  id        String   @id @default(uuid())
+  userId    String
+  contactId String
+  createdAt DateTime @default(now())
+
+  user    User @relation("UserContacts", fields: [userId], references: [id], onDelete: Cascade)
+  contact User @relation("ContactUser", fields: [contactId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, contactId])
+}
+
+model BlockedUser {
+  id        String   @id @default(uuid())
+  blockerId String
+  blockedId String
+  createdAt DateTime @default(now())
+
+  blocker User @relation("Blocker", fields: [blockerId], references: [id], onDelete: Cascade)
+  blocked User @relation("Blocked", fields: [blockedId], references: [id], onDelete: Cascade)
+
+  @@unique([blockerId, blockedId])
+}
+
+// ==================== Чаты ====================
+
+model Chat {
+  id          String   @id @default(uuid())
+  type        String   // private, group, channel, saved
+  title       String?
+  description String?
+  avatarUrl   String?
+  inviteLink  String?  @unique
+  slowMode    Int      @default(0)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  members     ChatMember[]
+  messages    Message[]
+  pinnedMessages PinnedMessage[]
+}
+
+model ChatMember {
+  id               String   @id @default(uuid())
+  chatId           String
+  userId           String
+  role             String   @default("member") // owner, admin, member
+  canSendMessages  Boolean  @default(true)
+  canSendMedia     Boolean  @default(true)
+  canSendStickers  Boolean  @default(true)
+  canSendLinks     Boolean  @default(true)
+  canInviteUsers   Boolean  @default(true)
+  canPinMessages   Boolean  @default(false)
+  canDeleteMessages Boolean @default(false)
+  canBanUsers      Boolean  @default(false)
+  canEditInfo      Boolean  @default(false)
+  isMuted          Boolean  @default(false)
+  isPinned         Boolean  @default(false)
+  isArchived       Boolean  @default(false)
+  unreadCount      Int      @default(0)
+  lastReadMessageId String?
+  joinedAt         DateTime @default(now())
+
+  chat Chat @relation(fields: [chatId], references: [id], onDelete: Cascade)
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([chatId, userId])
+}
+
+// ==================== Сообщения ====================
+
+model Message {
+  id          String   @id @default(uuid())
+  chatId      String
+  senderId    String
+  type        String   @default("text")
+  text        String?
+  mediaUrl    String?
+  mediaThumbnail String?
+  mediaType   String?
+  mediaName   String?
+  mediaSize   Int?
+  replyToId   String?
+  forwardFromChatId    String?
+  forwardFromMessageId String?
+  forwardFromSender    String?
+  isEdited    Boolean  @default(false)
+  autoDeleteAt DateTime?
+  scheduledAt  DateTime?
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  chat      Chat              @relation(fields: [chatId], references: [id], onDelete: Cascade)
+  sender    User              @relation(fields: [senderId], references: [id], onDelete: Cascade)
+  replyTo   Message?          @relation("MessageReplies", fields: [replyToId], references: [id])
+  replies   Message[]         @relation("MessageReplies")
+  reactions MessageReaction[]
+  pinned    PinnedMessage?
+
+  @@index([chatId, createdAt])
+}
+
+model MessageReaction {
+  id        String   @id @default(uuid())
+  messageId String
+  userId    String
+  emoji     String
+  createdAt DateTime @default(now())
+
+  message Message @relation(fields: [messageId], references: [id], onDelete: Cascade)
+  user    User    @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([messageId, userId, emoji])
+}
+
+model PinnedMessage {
+  id        String   @id @default(uuid())
+  chatId    String
+  messageId String   @unique
+  pinnedAt  DateTime @default(now())
+
+  chat    Chat    @relation(fields: [chatId], references: [id], onDelete: Cascade)
+  message Message @relation(fields: [messageId], references: [id], onDelete: Cascade)
+}
+
+// ==================== Папки ====================
+
+model ChatFolder {
+  id      String @id @default(uuid())
+  userId  String
+  name    String
+  filters String // JSON строка с фильтрами
+  order   Int    @default(0)
+}
+
+// ==================== Звонки ====================
+
+model Call {
+  id         String    @id @default(uuid())
+  type       String    // audio, video
+  callerId   String
+  receiverId String
+  status     String    @default("ringing")
+  startedAt  DateTime?
+  endedAt    DateTime?
+  duration   Int?
+  createdAt  DateTime  @default(now())
+
+  caller   User @relation("Caller", fields: [callerId], references: [id], onDelete: Cascade)
+  receiver User @relation("Receiver", fields: [receiverId], references: [id], onDelete: Cascade)
+}
+
+// ==================== Боты ====================
+
+model Bot {
+  id          String   @id @default(uuid())
+  username    String   @unique
+  displayName String
+  description String?
+  avatarUrl   String?
+  token       String   @unique
+  ownerId     String
+  commands    String   @default("[]") // JSON массив команд
+  createdAt   DateTime @default(now())
+
+  owner User @relation(fields: [ownerId], references: [id], onDelete: Cascade)
+}
+
+// ==================== Стикеры ====================
+
+model StickerPack {
+  id           String    @id @default(uuid())
+  name         String    @unique
+  title        String
+  thumbnailUrl String?
+  creatorId    String
+  createdAt    DateTime  @default(now())
+
+  stickers Sticker[]
+}
+
+model Sticker {
+  id     String @id @default(uuid())
+  packId String
+  emoji  String?
+  url    String
+  type   String @default("static") // static, animated, video
+  width  Int
+  height Int
+
+  pack StickerPack @relation(fields: [packId], references: [id], onDelete: Cascade)
+}
