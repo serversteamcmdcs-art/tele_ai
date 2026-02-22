@@ -1,0 +1,30 @@
+{
+  "name": "teleai",
+  "version": "1.0.0",
+  "private": true,
+  "description": "TeleAI — мессенджер в русском патриотическом стиле",
+  "workspaces": [
+    "packages/shared",
+    "packages/server",
+    "packages/client"
+  ],
+  "type": "module",
+  "scripts": {
+    "dev": "concurrently \"npm run dev:server\" \"npm run dev:client\"",
+    "dev:server": "npm run dev -w packages/server",
+    "dev:client": "npm run dev -w packages/client",
+    "build": "node build.js",
+    "build:client": "npx vite build --outDir dist",
+    "start": "npx tsx packages/server/src/index.ts",
+    "desktop": "cd packages/desktop && npx electron .",
+    "desktop:build": "cd packages/desktop && npx electron-builder --win portable",
+    "desktop:install": "cd packages/desktop && npm install",
+    "db:generate": "npm run db:generate -w packages/server",
+    "db:push": "npm run db:push -w packages/server",
+    "db:seed": "npm run db:seed -w packages/server"
+  },
+  "devDependencies": {
+    "concurrently": "^8.2.2",
+    "typescript": "^5.4.0"
+  }
+}

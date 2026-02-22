@@ -1,0 +1,225 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+html, body, #root {
+  height: 100%;
+  overflow: hidden;
+}
+
+body {
+  font-family: 'Inter', system-ui, -apple-system, sans-serif;
+  color: #fff;
+}
+
+/* ======= КИСЛОТНЫЙ АНИМИРОВАННЫЙ ФОН ======= */
+.acid-bg {
+  background: #050510;
+  position: relative;
+  overflow: hidden;
+}
+
+.acid-bg::before {
+  content: '';
+  position: fixed;
+  inset: -50%;
+  width: 200%;
+  height: 200%;
+  background:
+    radial-gradient(ellipse 600px 600px at 20% 30%, rgba(57, 255, 20, 0.15) 0%, transparent 70%),
+    radial-gradient(ellipse 500px 500px at 80% 20%, rgba(255, 16, 240, 0.12) 0%, transparent 70%),
+    radial-gradient(ellipse 700px 700px at 50% 80%, rgba(0, 240, 255, 0.10) 0%, transparent 70%),
+    radial-gradient(ellipse 400px 400px at 90% 70%, rgba(223, 255, 0, 0.08) 0%, transparent 70%),
+    radial-gradient(ellipse 500px 500px at 10% 80%, rgba(191, 0, 255, 0.10) 0%, transparent 70%);
+  animation: acidFloat 20s ease-in-out infinite;
+  z-index: 0;
+  pointer-events: none;
+}
+
+@keyframes acidFloat {
+  0% { transform: translate(0, 0) rotate(0deg); }
+  25% { transform: translate(3%, -3%) rotate(2deg); }
+  50% { transform: translate(-2%, 4%) rotate(-1deg); }
+  75% { transform: translate(4%, 2%) rotate(3deg); }
+  100% { transform: translate(0, 0) rotate(0deg); }
+}
+
+/* ======= СТЕКЛО (glassmorphism) ======= */
+.glass {
+  background: rgba(15, 15, 30, 0.45);
+  backdrop-filter: blur(24px);
+  -webkit-backdrop-filter: blur(24px);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.5), inset 0 1px 0 rgba(255, 255, 255, 0.05);
+}
+
+.glass-light {
+  background: rgba(255, 255, 255, 0.04);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border: 1px solid rgba(255, 255, 255, 0.06);
+}
+
+.glass-strong {
+  background: rgba(10, 10, 25, 0.7);
+  backdrop-filter: blur(40px);
+  -webkit-backdrop-filter: blur(40px);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  box-shadow: 0 16px 48px rgba(0, 0, 0, 0.6), inset 0 1px 0 rgba(255, 255, 255, 0.08);
+}
+
+/* ======= НЕОНОВОЕ СВЕЧЕНИЕ ======= */
+.neon-text-green {
+  text-shadow: 0 0 7px #39FF14, 0 0 20px rgba(57, 255, 20, 0.5), 0 0 40px rgba(57, 255, 20, 0.2);
+}
+
+.neon-text-pink {
+  text-shadow: 0 0 7px #FF10F0, 0 0 20px rgba(255, 16, 240, 0.5), 0 0 40px rgba(255, 16, 240, 0.2);
+}
+
+.neon-text-cyan {
+  text-shadow: 0 0 7px #00F0FF, 0 0 20px rgba(0, 240, 255, 0.5), 0 0 40px rgba(0, 240, 255, 0.2);
+}
+
+.neon-border-green {
+  border: 1px solid rgba(57, 255, 20, 0.3);
+  box-shadow: 0 0 5px rgba(57, 255, 20, 0.15), inset 0 0 5px rgba(57, 255, 20, 0.05);
+}
+
+.neon-border-pink {
+  border: 1px solid rgba(255, 16, 240, 0.3);
+  box-shadow: 0 0 5px rgba(255, 16, 240, 0.15), inset 0 0 5px rgba(255, 16, 240, 0.05);
+}
+
+.neon-border-cyan {
+  border: 1px solid rgba(0, 240, 255, 0.3);
+  box-shadow: 0 0 5px rgba(0, 240, 255, 0.15), inset 0 0 5px rgba(0, 240, 255, 0.05);
+}
+
+/* Кислотная кнопка */
+.acid-btn {
+  background: linear-gradient(135deg, #39FF14, #00F0FF);
+  color: #000;
+  font-weight: 600;
+  border: none;
+  position: relative;
+  overflow: hidden;
+  transition: all 0.3s;
+}
+
+.acid-btn:hover {
+  box-shadow: 0 0 15px #39FF14, 0 0 30px rgba(57, 255, 20, 0.4);
+  transform: translateY(-1px);
+}
+
+.acid-btn:disabled {
+  opacity: 0.3;
+  cursor: not-allowed;
+  box-shadow: none;
+  transform: none;
+}
+
+.acid-btn-pink {
+  background: linear-gradient(135deg, #FF10F0, #BF00FF);
+  color: #fff;
+}
+
+.acid-btn-pink:hover {
+  box-shadow: 0 0 15px #FF10F0, 0 0 30px rgba(255, 16, 240, 0.4);
+}
+
+/* Сообщение своё — кислотное стекло */
+.msg-mine {
+  background: linear-gradient(135deg, rgba(57, 255, 20, 0.12), rgba(0, 240, 255, 0.08));
+  backdrop-filter: blur(16px);
+  border: 1px solid rgba(57, 255, 20, 0.2);
+  box-shadow: 0 4px 16px rgba(57, 255, 20, 0.08), inset 0 1px 0 rgba(255, 255, 255, 0.05);
+}
+
+/* Сообщение чужое — тёмное стекло */
+.msg-other {
+  background: rgba(15, 15, 30, 0.5);
+  backdrop-filter: blur(16px);
+  border: 1px solid rgba(0, 240, 255, 0.15);
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.3), inset 0 1px 0 rgba(255, 255, 255, 0.04);
+}
+
+/* ======= СКРОЛЛБАР ======= */
+::-webkit-scrollbar {
+  width: 6px;
+}
+
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+::-webkit-scrollbar-thumb {
+  background: rgba(57, 255, 20, 0.2);
+  border-radius: 3px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: rgba(57, 255, 20, 0.4);
+}
+
+/* ======= АНИМАЦИИ ======= */
+.message-enter {
+  animation: messageSlideUp 0.25s ease-out;
+}
+
+@keyframes messageSlideUp {
+  from {
+    opacity: 0;
+    transform: translateY(12px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.typing-dot {
+  animation: typingBounce 1.4s infinite ease-in-out both;
+}
+.typing-dot:nth-child(1) { animation-delay: -0.32s; }
+.typing-dot:nth-child(2) { animation-delay: -0.16s; }
+
+@keyframes typingBounce {
+  0%, 80%, 100% { transform: scale(0); }
+  40% { transform: scale(1); }
+}
+
+/* Пульсация записи */
+.recording-pulse {
+  animation: recPulse 1.5s ease-in-out infinite;
+}
+
+@keyframes recPulse {
+  0%, 100% { box-shadow: 0 0 5px #FF10F0, 0 0 15px rgba(255, 16, 240, 0.3); }
+  50% { box-shadow: 0 0 15px #FF10F0, 0 0 40px rgba(255, 16, 240, 0.5); }
+}
+
+/* Инпут фокус неон */
+.acid-input:focus {
+  border-color: rgba(57, 255, 20, 0.4) !important;
+  box-shadow: 0 0 8px rgba(57, 255, 20, 0.2), inset 0 0 4px rgba(57, 255, 20, 0.05);
+  outline: none;
+}
+
+/* Онлайн индикатор */
+.online-dot {
+  background: #39FF14;
+  box-shadow: 0 0 6px #39FF14, 0 0 12px rgba(57, 255, 20, 0.5);
+}
+
+/* Unread badge */
+.unread-badge {
+  background: linear-gradient(135deg, #FF10F0, #BF00FF);
+  box-shadow: 0 0 8px rgba(255, 16, 240, 0.4);
+}
