@@ -14,7 +14,7 @@
     "dev:server": "npm run dev -w packages/server",
     "dev:client": "npm run dev -w packages/client",
     "build": "node build.js",
-    "bot": "node bot.js",
+    "bot": "node bot.cjs",
     "bot1": "concurrently \"npm run start\" \"npm run bot\"",
     "build:client": "npx vite build --outDir dist",
     "start": "npx tsx packages/server/src/index.ts \node bot.js",
